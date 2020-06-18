@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites name='OpenWeather.xctest' tests='8' failures='0'>
+  <testsuite name='OpenWeatherUITests.OpenWeatherUITests' tests='1' failures='0'>
+    <testcase classname='OpenWeatherUITests.OpenWeatherUITests' name='testMasterTableViewLoad' time='6.855'/>
+  </testsuite>
+  <testsuite name='OpenWeatherTests.OpenWeatherTests' tests='7' failures='0'>
+    <testcase classname='OpenWeatherTests.CodingAssessmentAppTests' name='testHasATableView' time='0.007'/>
+    <testcase classname='OpenWeatherTests.OpenWeatherTests' name='testTableViewCellHasReuseIdentifier' time='0.004'/>
+    <testcase classname='OpenWeatherTests.OpenWeatherTests' name='testTableViewConformsToTableViewDataSourceProtocol' time='0.004'/>
+    <testcase classname='OpenWeatherTests.OpenWeatherTests' name='testTableViewConfromsToTableViewDelegateProtocol' time='0.005'/>
+    <testcase classname='OpenWeatherTests.OpenWeatherTests' name='testTableViewHasDataSource' time='0.005'/>
+    <testcase classname='OpenWeatherTests.OpenWeatherTests' name='testTableViewHasDelegate' time='0.004'/>
+    <testcase classname='OpenWeatherTests.OpenWeatherTests' name='testValidCallToNYGetsHTTPStatusCode200' time='2.277'/>
+  </testsuite>
+</testsuites>
