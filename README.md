@@ -67,7 +67,7 @@ In Swift, there are two very common implementations of this pattern: Extensions 
 - API class : `WeatherGetter`
 - MVC pattern used (recommanded by Apple)
 - Ready to fetch others section or period (see `Parameters` struct).
-- Modular enough to add others calls from Open Weather Map API.
+- Modular enough to add others calls from open Weather Map API.
 - Ready for background fetch (using `URLSession` with delegate).
 - Unit Testing using XCTest
 - UI Testing using XCUITest
@@ -123,7 +123,7 @@ In Swift, there are two very common implementations of this pattern: Extensions 
 - Install the lastest plugin version
 - Copy `run-sonar-swift.sh` somewhere in PATH
 
-![minio_SWIFT1](https://github.com/laxmansahni/CodeSample/blob/master/sonarqube-coverage.png)
+![minio_SWIFT1](https://github.com/laxmansahni/OpenWeather/blob/master/sonarqube-coverage.png)
 
 ## To Do
 
@@ -143,9 +143,9 @@ In Swift, there are two very common implementations of this pattern: Extensions 
 
 Distributed under the MIT license. See `LICENSE` for more information.
 
-[https://github.com/laxmansahni/CodeSample/blob/master/LICENSE](https://github.com/laxmansahni/OpenWeather/blob/master/LICENSE)
+[https://github.com/laxmansahni/OpenWeather/blob/master/LICENSE](https://github.com/laxmansahni/OpenWeather/blob/master/LICENSE)
 
-[swift-image]: https://img.shields.io/badge/swift-4.0-orange.svg
+[swift-image]: https://img.shields.io/badge/swift-5.0-orange
 [swift-url]: https://swift.org/
 [license-image]: https://img.shields.io/badge/License-MIT-blue.svg
 [license-url]: LICENSE
