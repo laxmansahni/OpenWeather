@@ -18,6 +18,8 @@
 		49B4488A249B8881004E2C14 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B44889249B8881004E2C14 /* Weather.swift */; };
 		49B4488C249B8BE7004E2C14 /* WeatherGetterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B4488B249B8BE7004E2C14 /* WeatherGetterDelegate.swift */; };
 		49B44894249BE744004E2C14 /* OpenWeatherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49B44893249BE744004E2C14 /* OpenWeatherTests.swift */; };
+		49E5FBD3249C986600EBFC0B /* weather.json in Resources */ = {isa = PBXBuildFile; fileRef = 49E5FBD2249C986600EBFC0B /* weather.json */; };
+		49E5FBD4249C9BCB00EBFC0B /* weather.json in Resources */ = {isa = PBXBuildFile; fileRef = 49E5FBD2249C986600EBFC0B /* weather.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +48,7 @@
 		49B44891249BE744004E2C14 /* OpenWeatherTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenWeatherTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		49B44893249BE744004E2C14 /* OpenWeatherTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWeatherTests.swift; sourceTree = "<group>"; };
 		49B44895249BE744004E2C14 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49E5FBD2249C986600EBFC0B /* weather.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = weather.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,7 @@
 			children = (
 				49B44893249BE744004E2C14 /* OpenWeatherTests.swift */,
 				49B44895249BE744004E2C14 /* Info.plist */,
+				49E5FBD2249C986600EBFC0B /* weather.json */,
 			);
 			path = OpenWeatherTests;
 			sourceTree = "<group>";
@@ -232,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49E5FBD4249C9BCB00EBFC0B /* weather.json in Resources */,
 				49B44880249B7B4B004E2C14 /* LaunchScreen.storyboard in Resources */,
 				49B4487D249B7B4B004E2C14 /* Assets.xcassets in Resources */,
 				49B4487B249B7B48004E2C14 /* Main.storyboard in Resources */,
@@ -242,6 +247,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49E5FBD3249C986600EBFC0B /* weather.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

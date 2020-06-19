@@ -12,8 +12,8 @@ import Foundation
  
 class WeatherGetter {
   
-  private let openWeatherMapBaseURL = "https://api.openweathermap.org/data/2.5/weather"
-  private let openWeatherMapAPIKey = "1c50a96eb009b91d632a5ff85081ba95"
+  let openWeatherMapBaseURL = "https://api.openweathermap.org/data/2.5/weather"
+  let openWeatherMapAPIKey = "1c50a96eb009b91d632a5ff85081ba95"
   
   private var delegate: WeatherGetterDelegate
   // MARK: -
