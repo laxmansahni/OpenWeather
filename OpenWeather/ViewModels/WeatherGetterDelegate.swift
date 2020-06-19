@@ -19,5 +19,6 @@ import Foundation
 // - The received weather data could not be converted from JSON into a dictionary.
 protocol WeatherGetterDelegate {
   func didGetWeather(weatherModel: WeatherModel)
+  func didGetForecast(forecastModel: ForecastModel)
   func didNotGetWeather(error: Error)
 }

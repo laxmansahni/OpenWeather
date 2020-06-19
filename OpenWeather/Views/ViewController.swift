@@ -79,6 +79,22 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
       }
     }
 
+    func didGetForecast(forecastModel: ForecastModel) {
+      // This method is called asynchronously, which means it won't execute in the main queue.
+      // ALl UI code needs to execute in the main queue, which is why we're wrapping the code
+      // that updates all the labels in a dispatch_async() call.
+         DispatchQueue.main.async  {
+            self.hideStaticLabels(isHidden: false)
+            self.getCurrentLocationButton.isEnabled = true
+            self.cityLabel.text = forecastModel.city.name
+            self.latitudeLabel.text = "\(forecastModel.city.coord.lat)"
+            self.longitudeLabel.text = "\(forecastModel.city.coord.lon)"
+            self.weatherLabel.text = forecastModel.list.first?.weather.first?.weatherDescription.rawValue
+            self.minTempLabel.text = "\(Int(round((forecastModel.list.first?.main.tempMinCelsius)!)))°C"
+            self.maxTempLabel.text = "\(Int(round((forecastModel.list.first?.main.tempMaxCelsius)!)))°C"
+            self.windLabel.text = "\(forecastModel.list.first?.wind.speed ?? 0.0) m/s"
+      }
+    }
     
     func didNotGetWeather(error: Error) {
       // This method is called asynchronously, which means it won't execute in the main queue.
@@ -226,9 +242,7 @@ extension ViewController: CLLocationManagerDelegate {
         // .requestLocation will only pass one location to the locations array
         // hence we can access it by taking the first element of the array
         if let location = locations.first {
-            self.latitudeLabel.text = "\(location.coordinate.latitude)"
-            self.longitudeLabel.text = "\(location.coordinate.longitude)"
-            weather.getWeatherByLatLon(lat: self.latitudeLabel.text!, lon: self.longitudeLabel.text!)
+            weather.getForecastByLatLon(lat: "\(location.coordinate.latitude)", lon: "\(location.coordinate.longitude)")
         }
     }
     
