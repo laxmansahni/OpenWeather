@@ -25,6 +25,11 @@ class WeatherGetter {
         getWeather(weatherRequestURL: weatherRequestURL)
     }
     
+    func getWeatherByLatLon(lat: String, lon: String) {
+      let weatherRequestURL = NSURL(string: "\(openWeatherMapBaseURL)?APPID=\(openWeatherMapAPIKey)&lat=\(lat)&lon=\(lon)")!
+        getWeather(weatherRequestURL: weatherRequestURL)
+    }
+    
   private func getWeather(weatherRequestURL: NSURL) {
     
     // This is a pretty simple networking task, so the shared session will do.

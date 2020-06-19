@@ -143,7 +143,7 @@ In Swift, there are two very common implementations of this pattern: Extensions 
 
 Distributed under the MIT license. See `LICENSE` for more information.
 
-[https://github.com/laxmansahni/OpenWeather/blob/master/LICENSE](https://github.com/laxmansahni/OpenWeather/blob/master/LICENSE)
+[LICENSE](https://github.com/laxmansahni/OpenWeather/blob/master/LICENSE)
 
 [swift-image]: https://img.shields.io/badge/swift-5.0-orange
 [swift-url]: https://swift.org/
