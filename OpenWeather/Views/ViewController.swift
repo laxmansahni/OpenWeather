@@ -10,9 +10,12 @@ import UIKit
 import CoreLocation
 
 class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelegate {
-
+    
     var weather: WeatherGetter!
     let locationManager = CLLocationManager()
+    var forecastModel: ForecastModel!
+    var nextForecast: Int = 0
+    var cntForecast: Int!
     
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var minTempLabel: UILabel!
@@ -24,13 +27,16 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var longitudeLabel: UILabel!
     @IBOutlet weak var getCurrentLocationButton: UIButton!
+    
+    @IBOutlet weak var getNextButton: UIButton!
+    @IBOutlet weak var dateLabel: UILabel!
     // static labels
     @IBOutlet weak var latitudeStaticLabel: UILabel!
     @IBOutlet weak var longitudeStaticLabel: UILabel!
     @IBOutlet weak var windStaticLabel: UILabel!
     @IBOutlet weak var minTempStaticLabel: UILabel!
     @IBOutlet weak var maxTempStaticLabel: UILabel!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -49,70 +55,83 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         latitudeLabel.text = ""
         longitudeLabel.text = ""
         cityTextField.text = ""
+        dateLabel.text = ""
         cityTextField.placeholder = "Enter minimum 3 cities & max 7 cities in , separated"
         cityTextField.delegate = self
         cityTextField.enablesReturnKeyAutomatically = true
         getCityWeatherButton.isEnabled = false
+        getNextButton.setTitle("", for: .normal)
+        getNextButton.isEnabled = false
         
         hideStaticLabels(isHidden: true)
     }
-
+    
     // MARK: -
     
     // MARK: WeatherGetterDelegate methods
     // -----------------------------------
     
     func didGetWeather(weatherModel: WeatherModel) {
-      // This method is called asynchronously, which means it won't execute in the main queue.
-      // ALl UI code needs to execute in the main queue, which is why we're wrapping the code
-      // that updates all the labels in a dispatch_async() call.
-         DispatchQueue.main.async  {
+        // This method is called asynchronously, which means it won't execute in the main queue.
+        // ALl UI code needs to execute in the main queue, which is why we're wrapping the code
+        // that updates all the labels in a dispatch_async() call.
+        DispatchQueue.main.async  {
             self.hideStaticLabels(isHidden: false)
+            self.dateLabel.text = ""
+            self.getNextButton.setTitle("", for: .normal)
+            self.getNextButton.isEnabled = false
             self.getCurrentLocationButton.isEnabled = true
             self.cityLabel.text = weatherModel.name
             self.latitudeLabel.text = "\(weatherModel.coord.lat)"
             self.longitudeLabel.text = "\(weatherModel.coord.lon)"
             self.weatherLabel.text = weatherModel.weather.first?.weatherDescription
             self.minTempLabel.text = "\(Int(round(weatherModel.main.tempMinCelsius)))°C"
-             self.maxTempLabel.text = "\(Int(round(weatherModel.main.tempMaxCelsius)))°C"
+            self.maxTempLabel.text = "\(Int(round(weatherModel.main.tempMaxCelsius)))°C"
             self.windLabel.text = "\(weatherModel.wind.speed) m/s"
-      }
+        }
     }
-
+    
     func didGetForecast(forecastModel: ForecastModel) {
-      // This method is called asynchronously, which means it won't execute in the main queue.
-      // ALl UI code needs to execute in the main queue, which is why we're wrapping the code
-      // that updates all the labels in a dispatch_async() call.
-         DispatchQueue.main.async  {
+        // This method is called asynchronously, which means it won't execute in the main queue.
+        // ALl UI code needs to execute in the main queue, which is why we're wrapping the code
+        // that updates all the labels in a dispatch_async() call.
+        self.forecastModel = forecastModel
+        self.cntForecast = forecastModel.cnt
+        DispatchQueue.main.async  {
             self.hideStaticLabels(isHidden: false)
             self.getCurrentLocationButton.isEnabled = true
             self.cityLabel.text = forecastModel.city.name
+            self.dateLabel.text = "\(forecastModel.list.first?.dtTxt ?? "0-0-0 00:00:00") UTC"
             self.latitudeLabel.text = "\(forecastModel.city.coord.lat)"
             self.longitudeLabel.text = "\(forecastModel.city.coord.lon)"
             self.weatherLabel.text = forecastModel.list.first?.weather.first?.weatherDescription.rawValue
             self.minTempLabel.text = "\(Int(round((forecastModel.list.first?.main.tempMinCelsius)!)))°C"
             self.maxTempLabel.text = "\(Int(round((forecastModel.list.first?.main.tempMaxCelsius)!)))°C"
             self.windLabel.text = "\(forecastModel.list.first?.wind.speed ?? 0.0) m/s"
-      }
+            self.getNextButton.setTitle("Next >>", for: .normal)
+            self.getNextButton.isEnabled = true
+        }
     }
     
     func didNotGetWeather(error: Error) {
-      // This method is called asynchronously, which means it won't execute in the main queue.
-      // ALl UI code needs to execute in the main queue, which is why we're wrapping the call
-      // to showSimpleAlert(title:message:) in a dispatch_async() call.
-       DispatchQueue.main.async  {
-        self.showSimpleAlert(title: "Can't get the weather",
-                             message: "The weather service isn't responding.")
-      }
-      print("didNotGetWeather error: \(error)")
+        // This method is called asynchronously, which means it won't execute in the main queue.
+        // ALl UI code needs to execute in the main queue, which is why we're wrapping the call
+        // to showSimpleAlert(title:message:) in a dispatch_async() call.
+        DispatchQueue.main.async  {
+            self.showSimpleAlert(title: "Can't get the weather",
+                                 message: "The weather service isn't responding.")
+        }
+        print("didNotGetWeather error: \(error)")
     }
     
     // MARK: - Button events
-     // ---------------------
+    // ---------------------
+    
+    //when user tap on a button to get current weather
     @IBAction func getWeatherClicked(_ sender: Any) {
         guard let text = cityTextField.text, !text.isEmpty else {
-             return
-           }
+            return
+        }
         let cities = cityTextField.text?.split(separator: ",")
         if cities!.count >= 3 && cities!.count < 7 {
             weather.getWeatherByCity(city: (String((cities?.first)!).urlEncoded))
@@ -120,7 +139,19 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         else {
             self.showSimpleAlert(title: "Not enough cities", message: "Required number of cities is missing")
         }
-            
+        
+    }
+    
+    //when user tap on next button to get further forecast
+    @IBAction func getNextClicked(_ sender: Any) {
+        self.nextForecast += 1
+        if self.nextForecast < self.cntForecast, let forecastModel = self.forecastModel {
+            self.dateLabel.text = "\(forecastModel.list[nextForecast].dtTxt ) UTC"
+            self.weatherLabel.text = forecastModel.list[nextForecast].weather.first?.weatherDescription.rawValue
+            self.minTempLabel.text = "\(Int(round((forecastModel.list[nextForecast].main.tempMinCelsius))))°C"
+            self.maxTempLabel.text = "\(Int(round((forecastModel.list[nextForecast].main.tempMaxCelsius))))°C"
+            self.windLabel.text = "\(forecastModel.list[nextForecast].wind.speed ) m/s"
+        }
     }
     
     // when user tap on a button to get location
@@ -132,16 +163,16 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
     
     func retriveCurrentLocation(){
         let status = CLLocationManager.authorizationStatus()
-
+        
         if(status == .denied || status == .restricted || !CLLocationManager.locationServicesEnabled()){
             // show alert to user telling them they need to allow location data to use some feature of your app
             return
         }
-
+        
         // if haven't show location permission dialog before, show it to user
         if(status == .notDetermined){
             locationManager.requestWhenInUseAuthorization()
-
+            
             // if you want the app to retrieve location data even in background, use requestAlwaysAuthorization
             // locationManager.requestAlwaysAuthorization()
             return
@@ -150,12 +181,12 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         // at this point the authorization status is authorized
         // request location data once
         locationManager.requestLocation()
-      
+        
     }
     
     // Enable the "Get weather for the city above" button
-     // if the city text field contains any text,
-     // disable it otherwise.
+    // if the city text field contains any text,
+    // disable it otherwise.
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
         let prospectiveText = (currentText as NSString).replacingCharacters(
@@ -166,15 +197,15 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         return true
     }
     // Pressing the clear button on the text field (the x-in-a-circle button
-     // on the right side of the field)
+    // on the right side of the field)
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
-           // Even though pressing the clear button clears the text field,
-         // this line is necessary. I'll explain in a later blog post.
-         textField.text = ""
-         
+        // Even though pressing the clear button clears the text field,
+        // this line is necessary. I'll explain in a later blog post.
+        textField.text = ""
+        
         getCityWeatherButton.isEnabled = false
         getCurrentLocationButton.isEnabled = true
-         return true
+        return true
     }
     
     // Pressing the return button on the keyboard should be like
@@ -184,27 +215,27 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         getWeatherClicked(getCityWeatherButton as Any)
         return true
     }
-      // MARK: - Utility methods
-      // -----------------------
-
+    // MARK: - Utility methods
+    // -----------------------
+    
     func showSimpleAlert(title: String, message: String) {
         let alert = UIAlertController(
-          title: title,
-          message: message,
-          preferredStyle: .alert
+            title: title,
+            message: message,
+            preferredStyle: .alert
         )
         let okAction = UIAlertAction(
-          title: "OK",
-          style:  .default,
-          handler: nil
+            title: "OK",
+            style:  .default,
+            handler: nil
         )
         alert.addAction(okAction)
         present(
-          alert,
-          animated: true,
-          completion: nil
+            alert,
+            animated: true,
+            completion: nil
         )
-      }
+    }
     
     func hideStaticLabels(isHidden: Bool)  {
         latitudeStaticLabel.isHidden = isHidden
@@ -213,30 +244,30 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         minTempStaticLabel.isHidden = isHidden
         maxTempStaticLabel.isHidden = isHidden
     }
-      
-    }
+    
+}
 
 extension ViewController: CLLocationManagerDelegate {
-  // handle delegate methods of location manager here
+    // handle delegate methods of location manager here
     // called when the authorization status is changed for the core location permission
-       func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-           print("location manager authorization status changed")
-           
-           switch status {
-           case .authorizedAlways:
-               print("user allow app to get location data when app is active or in background")
-           case .authorizedWhenInUse:
-               print("user allow app to get location data only when app is active")
-           case .denied:
-               print("user tap 'disallow' on the permission dialog, cant get location data")
-           case .restricted:
-               print("parental control setting disallow location data")
-           case .notDetermined:
-               print("the location permission dialog haven't shown before, user haven't tap allow/disallow")
-           @unknown default:
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        print("location manager authorization status changed")
+        
+        switch status {
+        case .authorizedAlways:
+            print("user allow app to get location data when app is active or in background")
+        case .authorizedWhenInUse:
+            print("user allow app to get location data only when app is active")
+        case .denied:
+            print("user tap 'disallow' on the permission dialog, cant get location data")
+        case .restricted:
+            print("parental control setting disallow location data")
+        case .notDetermined:
+            print("the location permission dialog haven't shown before, user haven't tap allow/disallow")
+        @unknown default:
             print("the location permission isn't valid")
         }
-       }
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // .requestLocation will only pass one location to the locations array
@@ -249,7 +280,7 @@ extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // might be that user didn't enable location service on the device
         // or there might be no GPS signal inside a building
-      
+        
         // might be a good idea to show an alert to user to ask them to walk to a place with GPS signal
     }
 }
