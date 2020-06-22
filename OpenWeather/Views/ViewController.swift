@@ -16,6 +16,8 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
     var forecastModel: ForecastModel!
     var nextForecast: Int = 0
     var cntForecast: Int!
+    var cities: [Substring]!
+    var nextCity: Int!
     
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var minTempLabel: UILabel!
@@ -89,6 +91,13 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
             self.maxTempLabel.text = "\(Int(round(weatherModel.main.tempMaxCelsius)))°C"
             self.windLabel.text = "\(weatherModel.wind.speed) m/s"
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            // your code here
+            self.nextCity += 1
+            if self.nextCity < self.cities.count {
+                self.weather.getWeatherByCity(city: (String((self.cities[self.nextCity])).urlEncoded))
+            }
+        }
     }
     
     func didGetForecast(forecastModel: ForecastModel) {
@@ -132,7 +141,8 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
         guard let text = cityTextField.text, !text.isEmpty else {
             return
         }
-        let cities = cityTextField.text?.split(separator: ",")
+        nextCity = 0
+        cities = cityTextField.text?.split(separator: ",")
         if cities!.count >= 3 && cities!.count < 7 {
             weather.getWeatherByCity(city: (String((cities?.first)!).urlEncoded))
         }
