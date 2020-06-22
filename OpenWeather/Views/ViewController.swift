@@ -161,6 +161,10 @@ class ViewController: UIViewController, WeatherGetterDelegate, UITextFieldDelega
             self.minTempLabel.text = "\(Int(round((forecastModel.list[nextForecast].main.tempMinCelsius))))°C"
             self.maxTempLabel.text = "\(Int(round((forecastModel.list[nextForecast].main.tempMaxCelsius))))°C"
             self.windLabel.text = "\(forecastModel.list[nextForecast].wind.speed ) m/s"
+        } else {
+            self.getNextButton.setTitle("", for: .normal)
+            self.getNextButton.isEnabled = false
+            self.showSimpleAlert(title: " No more forecast", message: "There is no more forecast to display")
         }
     }
     
